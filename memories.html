@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Memories 📸</title>
+  <link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="hearts-bg fade-in">
+  <canvas id="hearts-canvas" aria-hidden="true"></canvas>
+
+  <div class="center-card wide">
+    <h1 class="title">📸 Our Memories</h1>
+    <div class="slider">
+      <img id="memoryImage" class="slide-img" src="img/photo1.jpg" alt="memory">
+    </div>
+    <div class="controls">
+      <button class="pill-btn" id="prevBtn">⬅ Prev</button>
+      <button class="pill-btn" id="nextBtn">Next ➡</button>
+    </div>
+    
+    <a class="link" href="main.html">⬅ กลับ</a>
+  </div>
+
+  <audio id="bgm" loop preload="auto">
+    <source src="audio/Chevy.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script>
+     const imgs = [];
+    for (let i = 1; i <= 74; i++) {
+        imgs.push(`img/photo${i}.jpg`);
+    }
+
+    let idx = 0;
+    const imgEl = document.getElementById('memoryImage');
+
+    function show() {
+        imgEl.classList.add('fade-out');
+        setTimeout(() => {
+            imgEl.src = imgs[idx];
+            imgEl.classList.remove('fade-out');
+            imgEl.classList.add('fade-in-img');
+            setTimeout(() => imgEl.classList.remove('fade-in-img'), 400);
+        }, 300);
+    }
+
+    document.getElementById('prevBtn').onclick = () => {
+        idx = (idx - 1 + imgs.length) % imgs.length;
+        show();
+    };
+    document.getElementById('nextBtn').onclick = () => {
+        idx = (idx + 1) % imgs.length;
+        show();
+    };
+
+    // touch swipe
+    let startX = null;
+    imgEl.addEventListener('touchstart', e => { startX = e.touches[0].clientX; });
+    imgEl.addEventListener('touchend', e => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) {
+            if (dx < 0) {
+                idx = (idx + 1) % imgs.length;
+            } else {
+                idx = (idx - 1 + imgs.length) % imgs.length;
+            }
+            show();
+        }
+        startX = null;
+    });
+
+    // แสดงภาพแรกตอนโหลดหน้า
+    show();
+  </script>
+  <script src="js/script.js"></script>
+</body>
+</html>
